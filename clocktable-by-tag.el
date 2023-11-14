@@ -98,19 +98,40 @@ This function expects output in the form of a list of entries from `org-clock-ge
               clock-data
               0))
 
+(defun clocktable-by-tag--get-files (params)
+  "Return list of files from which to construct clocktable.
+
+See `org-dblock-write:clocktable' for information on PARAMS.
+
+Users can provide files in two ways:
+
+1. ':files': A list file paths
+2. ':files-fn': A function which is called without arguments and should return a list of file paths
+
+If both are provided, ':files' is used."
+  (let ((files-fn (plist-get :files-fn params))
+        (files (plist-get :files params)))
+    (if (and (not files-fn)
+             (not files))
+        (error "ERROR [clocktable-by-tag] You must provide either :files-fn or :files as parameters."))
+    (or files
+        (funcall files-fn))))
+
+(defun clocktable-by-tag--insert-table-headings ()
+  "Insert the initial table headings."
+  (insert "| | | <r> |\n")
+  (insert "| Tag | Headline | Time |\n")
+  (insert "|--\n")
+  (insert "| | All *Total time* | \n"))
+
 (defun org-dblock-write:clocktable-by-tag (params)
   "Create a clocktable grouped by tags. Only look at first tag on each headline.
 
 - PARAMS: See `org-dblock-write:clocktable'"
-  (insert "| | | <r> |\n")
-  (insert "| Tag | Headline | Time (h) |\n")
-  (insert "|--\n")
-  (insert "| | All *Total time* | \n")
-
+  (clocktable-by-tag--insert-table-headings)
   ;; We can't sort by tags unless we collect the tags
   (plist-put params :tags t)
-
-  (let* ((files (plist-get :files params))
+  (let* ((files (clocktable-by-tag--get-files params))
          (clock-data (clocktable-by-tag--get-clock-data files
                                                         params))
          (entries-hash (clocktable-by-tag--get-entries-by-tag-hash clock-data))

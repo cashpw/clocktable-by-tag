@@ -28,4 +28,4 @@ Group clocktable entries by their first tag.
 ,#+END:
 #+end_src
 
-Thanks to ffevotte for [setting the foundation](https://gist.github.com/ffevotte/5899058).
+Thanks to [[github:ffevotte][ffevotte]] for [[https://gist.github.com/ffevotte/5899058][setting the foundation]].

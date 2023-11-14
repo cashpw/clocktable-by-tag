@@ -109,11 +109,11 @@ Users can provide files in two ways:
 2. ':files-fn': A function which is called without arguments and should return a list of file paths
 
 If both are provided, ':files' is used."
-  (let ((files-fn (plist-get :files-fn params))
-        (files (plist-get :files params)))
-    (if (and (not files-fn)
-             (not files))
-        (error "ERROR [clocktable-by-tag] You must provide either :files-fn or :files as parameters."))
+  (let ((files-fn (plist-get params :files-fn))
+        (files (plist-get params :files)))
+    (when (and (not files-fn)
+               (not files))
+      (error "ERROR [clocktable-by-tag] You must provide either :files-fn or :files as parameters."))
     (or files
         (funcall files-fn))))
 

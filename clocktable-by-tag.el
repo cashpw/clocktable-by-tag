@@ -19,6 +19,9 @@
 ;;
 ;;; Code:
 
+(require 'org-clock)
+(require 's)
+
 (defun clocktable-by-tag--shift-cell (n)
   (let ((str ""))
     (dotimes (i n)

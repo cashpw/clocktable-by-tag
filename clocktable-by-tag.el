@@ -40,8 +40,7 @@
                     (if (> total-minutes 0)
                         (append all-clock-data
                                 entries)
-                      all-clock-data)
-                    )))
+                      all-clock-data))))
               files
               '()))
 

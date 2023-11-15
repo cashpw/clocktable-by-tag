@@ -7,7 +7,7 @@
 ;; Created: November 14, 2023
 ;; Modified: November 14, 2023
 ;; Version: 0.0.1
-;; Keywords: abbrev bib c calendar comm convenience data docs emulations extensions faces files frames games hardware help hypermedia i18n internal languages lisp local maint mail matching mouse multimedia news outlines processes terminals tex tools unix vc wp
+;; Keywords: calendar
 ;; Homepage: https://github.com/cashpw/clocktable-by-tag
 ;; Package-Requires: ((emacs "27.1") (s "1.13.1"))
 ;;

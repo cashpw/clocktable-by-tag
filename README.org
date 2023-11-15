@@ -29,3 +29,24 @@ Group clocktable entries by their first tag.
 #+end_src
 
 Thanks to [[github:ffevotte][ffevotte]] for [[https://gist.github.com/ffevotte/5899058][setting the foundation]].
+
+* Install
+
+** Doom Emacs
+
+#+begin_src org
+,#+begin_src emacs-lisp :tangle packages.el
+(package! clocktable-by-tag
+  :recipe (:host github
+           :repo "cashpw/clocktable-by-tag"))
+,#+end_src
+
+,#+begin_src emacs-lisp :tangle config.el
+(use-package! clocktable-by-tag
+  :after org)
+,#+end_src
+#+end_src
+
+** Vanilla Emacs
+
+TODO

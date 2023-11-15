@@ -127,10 +127,29 @@ If both are provided, ':files' is used."
   (insert "|--\n")
   (insert "| | All *Total time* | \n"))
 
+(defun clocktable-by-tag--insert-caption (params)
+  "Insert caption for when table was last updated.
+
+- PARAMS: See `org-dblock-write:clocktable'
+
+See `org-clocktable-write-default'."
+  (let* ((block (plist-get params :block))
+         (summary-at (format-time-string (org-time-stamp-format t t)))
+         (for-block (if block
+                        (let ((range-text (nth 2 (org-clock-special-range
+                                                  block nil t
+                                                  (plist-get params :wstart)
+                                                  (plist-get params :mstart)))))
+                          (format ", for %s." range-text))
+                      "")))
+    (insert-before-markers
+     (s-lex-format "#+CAPTION: Clock summary at ${summary-at}${for-block}\n"))))
+
 (defun org-dblock-write:clocktable-by-tag (params)
   "Create a clocktable grouped by tags. Only look at first tag on each headline.
 
 - PARAMS: See `org-dblock-write:clocktable'"
+  (clocktable-by-tag--insert-caption params)
   (clocktable-by-tag--insert-table-headings)
   ;; We can't sort by tags unless we collect the tags
   (plist-put params :tags t)

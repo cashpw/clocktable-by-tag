@@ -69,7 +69,8 @@
 (defun clocktable-by-tag--get-tags (clock-data-entries)
   "Return unique list of tags within CLOCK-DATA-ENTRIES.
 
-This function expects output in the form of a list of entries from `org-clock-get-table-data'."
+This function expects output in the form of a list of
+entries from `org-clock-get-table-data'."
   (seq-uniq
    (seq-reduce
     (lambda (tags-with-duplicates entry)
@@ -108,7 +109,8 @@ See `org-dblock-write:clocktable' for information on PARAMS.
 Users can provide files in two ways:
 
 1. ':files': A list file paths
-2. ':files-fn': A function which is called without arguments and should return a list of file paths
+2. ':files-fn': A function which is called without arguments
+   and should return a list of file paths
 
 If both are provided, ':files' is used."
   (let ((files-fn (plist-get params :files-fn))

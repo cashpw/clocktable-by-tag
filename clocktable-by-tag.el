@@ -9,7 +9,7 @@
 ;; Version: 0.0.1
 ;; Keywords: calendar
 ;; Homepage: https://github.com/cashpw/clocktable-by-tag
-;; Package-Requires: ((emacs "27.1") (s "1.13.1"))
+;; Package-Requires: ((emacs "29.1") (s "1.13.1"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -21,6 +21,69 @@
 
 (require 'org-clock)
 (require 's)
+
+(defgroup clocktable-by-tag nil
+  "Options related to the clocktable-by-tag dblock."
+  :tag "Org Clock by tag")
+
+(defcustom clocktable-by-tag--dblock-name "clocktable-by-tag"
+  "Name of the dblock this package generates."
+  :type 'string
+  :group 'clocktable-by-tag)
+
+(defcustom clocktable-by-tag--default-properties '(:maxlevel 2 :files org-agenda-files)
+  "Default properties for new clocktable-by-tag.
+
+These are inserted into the BEGIN line when we generate a new report."
+  :type 'plist
+  :group 'clocktable-by-tag)
+
+(defun in-clocktable-by-tag-p ()
+  "Check if the cursor is in a clocktable-by-tag."
+  (let ((pos (point))
+        (begin-target (s-lex-format "^[ \t]*#\\+BEGIN:[ \t]+${clocktable-by-tag--dblock-name}"))
+        (end-target "^[ \t]*#\\+END:.*")
+        start)
+    (save-excursion
+      (end-of-line 1)
+      (and (re-search-backward begin-target nil t)
+           (setq start (match-beginning 0))
+           (re-search-forward end-target nil t)
+           (>= (match-end 0) pos)
+           start))))
+
+(defun clocktable-by-tag-report (&optional arg)
+  "Update or create a table containing a report about clocked time by tag.
+
+If point is inside an existing clocktable block, update it.
+Otherwise, insert a new one.
+
+The new table inherits its properties from the variable
+`clocktable-by-tag--default-properties'.
+
+The scope of the clocktable, when not specified in the previous
+variable, is `subtree' of the current heading when the function is
+called from inside heading, and `file' elsewhere (before the first
+heading).
+
+When called with a prefix argument, move to the first clock table
+in the buffer and update it.
+
+Based on `org-clock-report'."
+  (interactive "P")
+  (org-clock-remove-overlays)
+  (when arg
+    (org-find-dblock clocktable-by-tag--dblock-name)
+    (org-fold-show-entry))
+  (pcase (in-clocktable-by-tag-p)
+    (`nil
+     (org-create-dblock
+      (org-combine-plists
+       (list :scope (if (org-before-first-heading-p) 'file 'subtree))
+       clocktable-by-tag--default-properties
+       `(:name ,clocktable-by-tag--dblock-name))))
+    (start (goto-char start)))
+  (org-update-dblock))
 
 (defun clocktable-by-tag--shift-cell (n)
   "Return a N-wide table shift."

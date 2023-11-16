@@ -23,10 +23,8 @@
 (require 's)
 
 (defun clocktable-by-tag--shift-cell (n)
-  (let ((str ""))
-    (dotimes (i n)
-      (setq str (concat str "| ")))
-    str))
+  "Return a N-wide table shift."
+  (s-repeat n "| "))
 
 (defun clocktable-by-tag--get-clock-data (files params)
   "Return a list of all clock table data entries from FILES.

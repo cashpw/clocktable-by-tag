@@ -21,6 +21,7 @@
 
 (require 'org-clock)
 (require 's)
+(require 'dash)
 
 (defgroup clocktable-by-tag nil
   "Options related to the clocktable-by-tag dblock."
@@ -29,6 +30,13 @@
 (defcustom clocktable-by-tag--dblock-name "clocktable-by-tag"
   "Name of the dblock this package generates."
   :type 'string
+  :group 'clocktable-by-tag)
+
+(defcustom clocktable-by-tag--merge-duplicate-headlines nil
+  "Group headlines with the same text if non-nil.
+
+This is a work-around for `org-mode' not supporting multiple schedule dates for a single event."
+  :type 'boolean
   :group 'clocktable-by-tag)
 
 (defcustom clocktable-by-tag--default-properties '(:maxlevel 2 :files org-agenda-files)
@@ -112,13 +120,33 @@ Based on `org-clock-report'."
   (insert "|--\n")
   (insert (s-lex-format "| ${tag} | *Tag time* |\n"))
   (let ((total 0))
-    (dolist (entry entries)
-      (cl-destructuring-bind (level headline _ _ minutes _) entry
-        (setq total (+ total minutes))
-        (let ((indent (org-clocktable-indent-string level))
-              (shift-cell (clocktable-by-tag--shift-cell level))
-              (duration (org-duration-from-minutes minutes)))
-          (insert (s-lex-format "| |${indent}${headline} | ${shift-cell} ${duration} |\n")))))
+    (if clocktable-by-tag--merge-duplicate-headlines
+        (let ((entries-by-headline (-group-by (lambda (entry)
+                                                (cl-destructuring-bind (_ headline _ _ _ _) entry
+                                                  headline))
+                                              entries)))
+          (cl-dolist (entry-alist entries-by-headline)
+            (let* ((headline (car entry-alist))
+                   (entries (cdr entry-alist))
+                   (level (cl-destructuring-bind (level _ _ _ _ _) (nth 0 entries)
+                            level))
+                   (minutes (--reduce-from (+ acc
+                                              (cl-destructuring-bind (_ _ _ _ minutes _) it
+                                                minutes))
+                                           0
+                                           entries)))
+              (setq total (+ total minutes))
+              (let ((indent (org-clocktable-indent-string level))
+                    (shift-cell (clocktable-by-tag--shift-cell level))
+                    (duration (org-duration-from-minutes minutes)))
+                (insert (s-lex-format "| |${indent}${headline} | ${shift-cell} ${duration} |\n"))))))
+      (cl-dolist (entry entries)
+        (cl-destructuring-bind (level headline _ _ minutes _) entry
+          (setq total (+ total minutes))
+          (let ((indent (org-clocktable-indent-string level))
+                (shift-cell (clocktable-by-tag--shift-cell level))
+                (duration (org-duration-from-minutes minutes)))
+            (insert (s-lex-format "| |${indent}${headline} | ${shift-cell} ${duration} |\n"))))))
     (save-excursion
       (let ((duration (org-duration-from-minutes total)))
         (re-search-backward "*Tag time*")

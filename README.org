@@ -67,29 +67,29 @@ A function which returns a list of files to read.
 Merge duplicate headlines when non-nil.
 
 #+begin_src org
-,#+BEGIN: clocktable-by-tag :files-fn cashpw/org-clock--agenda-with-archives :block "2023-11-27"
+,#+BEGIN: clocktable-by-tag :block "2023-11-27" ...
 ,#+CAPTION: Clock summary at [2023-11-27 Mon 19:45], for Monday, November 27, 2023.
-|          |                                                   |    <r> |      |
-| Tag      | Headline                                          |   Time |      |
-|----------+---------------------------------------------------+--------+------|
-|          | All *Total time*                                  | *1:00* |      |
-|----------+---------------------------------------------------+--------+------|
-| home     | *Tag time*                                        | *1:00* |      |
-|          | Laundry                                           |        | 0:20 |
-|          | Laundry                                           |        | 0:20 |
-|          | Laundry                                           |        | 0:20 |
+|      |                  |    <r> |      |
+| Tag  | Headline         |   Time |      |
+|------+------------------+--------+------|
+|      | All *Total time* | *1:00* |      |
+|------+------------------+--------+------|
+| home | *Tag time*       | *1:00* |      |
+|      | Laundry          |        | 0:20 |
+|      | Laundry          |        | 0:20 |
+|      | Laundry          |        | 0:20 |
 ,#+END:
 #+end_src
 
 #+begin_src org
-,#+BEGIN: clocktable-by-tag :files-fn cashpw/org-clock--agenda-with-archives :block "2023-11-27" :merge-duplicate-headlines t
+,#+BEGIN: clocktable-by-tag :block "2023-11-27" :merge-duplicate-headlines t ...
 ,#+CAPTION: Clock summary at [2023-11-27 Mon 19:45], for Monday, November 27, 2023.
-|          |                                                   |    <r> |      |
-| Tag      | Headline                                          |   Time |      |
-|----------+---------------------------------------------------+--------+------|
-|          | All *Total time*                                  | *1:00* |      |
-|----------+---------------------------------------------------+--------+------|
-| home     | *Tag time*                                        | *1:00* |      |
-|          | Laundry                                           |        | 1:00 |
+|      |                  |    <r> |      |
+| Tag  | Headline         |   Time |      |
+|------+------------------+--------+------|
+|      | All *Total time* | *1:00* |      |
+|------+------------------+--------+------|
+| home | *Tag time*       | *1:00* |      |
+|      | Laundry          |        | 1:00 |
 ,#+END:
 #+end_src

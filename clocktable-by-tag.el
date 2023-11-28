@@ -32,13 +32,6 @@
   :type 'string
   :group 'clocktable-by-tag)
 
-(defcustom clocktable-by-tag--merge-duplicate-headlines nil
-  "Group headlines with the same text if non-nil.
-
-This is a work-around for `org-mode' not supporting multiple schedule dates for a single event."
-  :type 'boolean
-  :group 'clocktable-by-tag)
-
 (defcustom clocktable-by-tag--default-properties '(:maxlevel 2 :files org-agenda-files)
   "Default properties for new clocktable-by-tag.
 
@@ -113,14 +106,14 @@ Based on `org-clock-report'."
               files
               '()))
 
-(defun clocktable-by-tag--insert-row (tag entries)
+(defun clocktable-by-tag--insert-row (tag entries merge-duplicate-headlines)
   "Insert a row of ENTRIES for TAG.
 
 - ENTRIES: List of entries with TAG; see `org-clock-get-table-data'"
   (insert "|--\n")
   (insert (s-lex-format "| ${tag} | *Tag time* |\n"))
   (let ((total 0))
-    (if clocktable-by-tag--merge-duplicate-headlines
+    (if merge-duplicate-headlines
         (let ((entries-by-headline (-group-by (lambda (entry)
                                                 (cl-destructuring-bind (_ headline _ _ _ _) entry
                                                   headline))
@@ -250,10 +243,12 @@ See `org-clocktable-write-default'."
          (clock-data (clocktable-by-tag--get-clock-data files
                                                         params))
          (entries-hash (clocktable-by-tag--get-entries-by-tag-hash clock-data))
+         (merge-duplicate-headlines (plist-get params :merge-duplicate-headlines))
          (tags (hash-table-keys entries-hash)))
     (dolist (tag tags)
       (clocktable-by-tag--insert-row tag
-                                     (gethash tag entries-hash)))
+                                     (gethash tag entries-hash)
+                                     merge-duplicate-headlines))
     (save-excursion
       (let ((duration (org-duration-from-minutes (clocktable-by-tag--sum-durations clock-data))))
         (re-search-backward "*Total time*")

@@ -30,6 +30,8 @@ Group clocktable entries by their first tag.
 
 Thanks to [[github:ffevotte][ffevotte]] for [[https://gist.github.com/ffevotte/5899058][setting the foundation]].
 
+Also check out [[github:cashpw/clocktable-by-category][=clocktable-by-category=]].
+
 * Install
 
 ** Doom Emacs

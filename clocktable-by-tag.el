@@ -9,7 +9,7 @@
 ;; Version: 0.0.1
 ;; Keywords: calendar
 ;; Homepage: https://github.com/cashpw/clocktable-by-tag
-;; Package-Requires: ((emacs "29.1") (s "1.13.1") (dash "2.19.1")
+;; Package-Requires: ((emacs "29.1") (s "1.13.1") (dash "2.19.1"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
